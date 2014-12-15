@@ -10,13 +10,17 @@ class topic(models.Model):
     user = models.ForeignKey(User, related_name='topics')
     title = models.CharField(max_length=160)
     content = models.TextField(blank=True, null=True)
-    rendered_content = models.TextField(blank=True, null=True)
+    content_rendered = models.TextField(blank=True, null=True)
     click = models.IntegerField(default=0)
     reply_count = models.IntegerField(default=0)
     node = models.ForeignKey('node', related_name='topics')
     time_created = models.DateTimeField(auto_now_add=True)
     last_replied = models.DateTimeField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
+    order = models.IntegerField(default=10)
+    
+    class Meta():
+        ordering = ['order' ,'-time_created']
 
     def __unicode__(self):
         return self.title
@@ -28,23 +32,25 @@ class topic(models.Model):
             new = False
         if not self.content:
             self.content = ''
-        self.rendered_content = markdown.markdown(self.content, ['codehilite'],
+        self.content_rendered = markdown.markdown(self.content, ['codehilite'],
                                                   safe_mode='escape')
-        self.reply_count = self.post_set.all().count()
+        self.reply_count = self.post_set.filter(deleted=False).count()
+        if self.reply_count:
+            self.last_replied = self.post_set.filter(deleted=False).latest('time_created').time_created
         to = []
-        for u in re.findall(r'@(.*?)\s', self.rendered_content):
+        for u in re.findall(r'@(.*?)\s', self.content_rendered):
             try:
                 user = User.objects.get(username=u)
             except:
                 pass
             else:
                 to.append(user)
-                self.rendered_content = re.sub('@%s' % (u),
+                self.content_rendered = re.sub('@%s' % (u),
                                                '@<a href="%s" class="mention">%s</a>'
                                                % (reverse('user_info',
                                                           kwargs={'user_id': user.id}),
                                                   u),
-                                               self.rendered_content)
+                                               self.content_rendered)
         super(topic, self).save(*args, **kwargs)
         if to and new:
             for t in to:
@@ -74,6 +80,9 @@ class post(models.Model):
     content_rendered = models.TextField()
     time_created = models.DateTimeField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
+
+    class Meta():
+        ordering = ['time_created']
 
     def __unicode__(self):
         return str(self.id) + self.topic.title
@@ -110,8 +119,6 @@ class post(models.Model):
                 m.post = self
                 m.topic = self.topic
                 m.save()
-        if new:
-            self.topic.last_replied = self.time_created
         self.topic.save()
 
 
