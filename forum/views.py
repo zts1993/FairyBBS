@@ -128,7 +128,7 @@ def search(request, keyword):
     keys = keyword.split(' ')
     condition = reduce(operator.and_,
                        (Q(title__contains=x) for x in keys))
-    topics = topic.objects.filter(condition)
+    topics = topic.objects.filter(condition).filter(deleted=False)
     try:
         page = request.GET['page']
     except:
