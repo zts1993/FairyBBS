@@ -35,7 +35,7 @@ def previewer(request):
 def index(request):
     conf.nodes = node.objects.all()
     conf.user_count = profile.objects.count()
-    conf.topic_count = topic.objects.count()
+    conf.topic_count = topic.objects.filter(deleted=False).count()
     conf.post_count = post.objects.count()
     topics = topic.objects.all().filter(deleted=False).order_by('-last_replied')[0:30]
     post_list_title = _('latest topics')
