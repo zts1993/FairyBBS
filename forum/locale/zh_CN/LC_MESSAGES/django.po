@@ -62,11 +62,11 @@ msgstr "标题"
 
 #: templates/forum/create-topic.html:45
 msgid "please sign in before post "
-msgstr "登陆后方可发言"
+msgstr "登录后方可发言"
 
 #: templates/forum/create-topic.html:47 templates/forum/topic.html:145
 msgid "sign in"
-msgstr "登陆"
+msgstr "登录"
 
 #: templates/forum/edit-topic.html:7
 msgid "edit topic"

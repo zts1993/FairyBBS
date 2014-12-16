@@ -117,7 +117,7 @@ def create_topic(request, node_id):
             messages.add_message(request, messages.WARNING, _('title cannot be empty'))
             return HttpResponseRedirect(reverse('create_topic', kwargs={'node_id':node_id}))
         if not request.user.is_authenticated():
-            return error(request, '请登陆', reverse('signin'))
+            return error(request, '请登录', reverse('signin'))
         t.user = request.user
         t.save()
         return HttpResponseRedirect(reverse('topic_view',

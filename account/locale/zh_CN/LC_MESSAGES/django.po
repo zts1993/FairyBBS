@@ -43,7 +43,7 @@ msgstr "更新"
 #: templates/account/login.html:6 templates/account/login.html.py:29
 #: views.py:91
 msgid "sign in"
-msgstr "登陆"
+msgstr "登录"
 
 #: templates/account/login.html:18 templates/account/reg.html:18
 msgid "username"

@@ -93,7 +93,7 @@ msgstr "登出"
 
 #: template/widget/user-panel.html:33
 msgid "sign in"
-msgstr "登陆"
+msgstr "登录"
 
 #: template/widget/user-panel.html:36
 msgid "reg"
